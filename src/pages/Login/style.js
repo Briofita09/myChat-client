@@ -1,28 +1,15 @@
 import styled from "styled-components";
 
-export const SignUpContainer = styled.div`
+export const LoginContainer = styled.div`
   height: 100vh;
   width: 100vw;
 `;
 
-export const SignUpTitle = styled.h1`
-  font-size: 2em;
-  font-family: "Orbitron", sans-serif;
-  font-weight: 800;
-  text-align: center;
-  margin: 0 auto;
-`;
-
-export const Form = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
 export const Input = styled.input`
   background-color: transparent;
+  font-family: "Orbitron", sans-serif;
   border: 2px solid green;
   border-radius: 10px;
-  font-family: "Orbitron", sans-serif;
   display: block;
   width: 50%;
   margin: 20px auto;

@@ -1,6 +1,14 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import { SignUpContainer, SignUpTitle, Form, Input, Button } from "./style.js";
+import {
+  SignUpContainer,
+  SignUpTitle,
+  Form,
+  Input,
+  Button,
+  Text,
+} from "./style.js";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -51,6 +59,9 @@ export default function SignUp() {
           />
           <Button>Cadastre-se</Button>
         </Form>
+        <Link to="/login">
+          <Text>Faça seu Login aqui</Text>
+        </Link>
       </SignUpContainer>
     </>
   );
