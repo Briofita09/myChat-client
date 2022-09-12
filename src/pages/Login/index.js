@@ -1,20 +1,32 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import { LoginContainer, Input, Button, Text } from "./style.js";
+import AppContext from "../../context/AuthContext.js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { setToken } = useContext(AppContext);
+
+  const navigate = useNavigate();
 
   const user = {
     email,
     password,
   };
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log(user);
+    try {
+      const response = await axios.post("http://localhost:5000/login", user);
+      setToken(response.data.token);
+      navigate("/main");
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (

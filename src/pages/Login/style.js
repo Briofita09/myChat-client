@@ -30,9 +30,9 @@ export const Input = styled.input`
 `;
 
 export const Button = styled.button`
-  border: 1px solid black;
+  border: 1px solid green;
   border-radius: 10px;
-  background-color: #4e97d1;
+  background-color: green;
   font-family: "Orbitron", sans-serif;
   color: #fff;
   margin: 15px auto;
@@ -50,4 +50,5 @@ export const Button = styled.button`
 export const Text = styled.p`
   font-family: "Orbitron", sans-serif;
   font-size: 0.85em;
+  color: green;
 `;
