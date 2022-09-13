@@ -6,16 +6,16 @@ export const MainContainer = styled.div`
 `;
 
 export const ChannelContainer = styled.div`
-  height: 100.5vh;
+  height: 100vh;
   width: 25vw;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: flex-start;
   border-right: 5px solid black;
 `;
 
 export const MessageContainer = styled.div`
-  height: 100.5vh;
+  height: 100vh;
   width: 95vw;
   display: flex;
   flex-direction: column;
@@ -42,7 +42,7 @@ export const HeaderContainer = styled.div`
 
 export const UsersContainer = styled.div`
   width: 25vw;
-  height: 90vh;
+  height: 89.5vh;
   border-bottom: 5px solid black;
   border-left: 5px solid black;
 `;
@@ -78,7 +78,8 @@ export const User = styled.p`
   text-align: center;
 `;
 
-export const Channel = styled.p`
+export const Channel = styled.button`
+  margin-top: 15%;
   text-align: center;
   font-family: "Orbitron", sans-serif;
   font-size: 2rem;

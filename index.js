@@ -5,7 +5,11 @@ function createWindow() {
     width: 1000,
     height: 1000,
     resizable: true,
-    webPreferences: { nodeIntegration: false, contextIsolation: true },
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      devTools: true,
+    },
   });
   //win.loadFile("build/index.html");
   win.loadURL("http://localhost:3000");

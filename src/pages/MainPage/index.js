@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 import AppContext from "../../context/AuthContext.js";
 import {
@@ -20,10 +21,14 @@ import {
 } from "./style.js";
 
 export default function MainPage() {
-  const [messages, setMessages] = useState([]);
+  const [profile, setProfile] = useState([]);
   const [channels, setChannels] = useState([]);
   const [users, setUsers] = useState([]);
+  const [channel, setChannel] = useState();
   const { token } = useContext(AppContext);
+
+  const socket = io("http://localhost:5000");
+  socket.emit("channelConnect", { channel });
 
   const config = {
     headers: {
@@ -32,13 +37,13 @@ export default function MainPage() {
   };
 
   useEffect(() => {
-    async function fetchMessages() {
+    async function fetchProfile() {
       try {
         const response = await axios.get(
           "http://localhost:5000/profile",
           config
         );
-        setMessages(response.data);
+        setProfile(response.data);
       } catch (err) {
         console.log(err);
       }
@@ -65,22 +70,45 @@ export default function MainPage() {
         console.log(err);
       }
     }
-    fetchMessages();
+    fetchProfile();
     fetchChannels();
     fetchUsers();
-  }, []);
+  }, [channel]);
+
+  async function channelConnect(id) {
+    const socket = io("http://localhost:5000");
+    socket.emit("channelConnect", { channel });
+    await axios.post(`http://localhost:5000/channels/${id}`, {}, config);
+    setChannel(id);
+  }
+
+  async function disconnectChannel() {
+    await axios.delete("http://localhost:5000/channels", config);
+    setChannel(null);
+  }
 
   return (
     <MainContainer>
       <ChannelContainer>
         {channels.map((channel) => {
-          return <Channel>{channel.name}</Channel>;
+          return (
+            <Channel
+              key={channel.id}
+              onClick={() => channelConnect(channel.id)}
+            >
+              {channel.name}
+            </Channel>
+          );
         })}
       </ChannelContainer>
       <MessageContainer>
         <HeaderContainer>
-          <HeaderTitle>Olá usuário</HeaderTitle>
-          <HeaderButton>Desconectar</HeaderButton>
+          <HeaderTitle>
+            {profile.channel
+              ? `Olá ${profile.name}, você está no canal ${profile.channel}`
+              : `Olá ${profile.name}, conecte a um canal para conversar`}
+          </HeaderTitle>
+          <HeaderButton onClick={disconnectChannel}>Desconectar</HeaderButton>
         </HeaderContainer>
         <MessageBox>
           <Message>Olá Mundo</Message>
