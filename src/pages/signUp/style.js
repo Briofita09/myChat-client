@@ -63,4 +63,6 @@ export const Button = styled.button`
 export const Text = styled.p`
   font-family: "Orbitron", sans-serif;
   font-size: 0.85em;
+  text-align: center;
+  color: green;
 `;

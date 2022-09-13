@@ -9,10 +9,14 @@ import {
   HeaderContainer,
   HeaderTitle,
   MessageContainer,
+  MessageBox,
   UsersContainer,
   Message,
   User,
   Channel,
+  InputContainer,
+  Input,
+  InputButton,
 } from "./style.js";
 
 export default function MainPage() {
@@ -78,9 +82,16 @@ export default function MainPage() {
           <HeaderTitle>Olá usuário</HeaderTitle>
           <HeaderButton>Desconectar</HeaderButton>
         </HeaderContainer>
-        <Message>Olá Mundo</Message>
-        <Message>Olá Mundo</Message>
-        <Message>Olá Mundo</Message>
+        <MessageBox>
+          <Message>Olá Mundo</Message>
+          <Message>Olá Mundo</Message>
+          <Message>Olá Mundo</Message>
+          <Message>Olá Mundo</Message>
+        </MessageBox>
+        <InputContainer>
+          <Input type="text" placeholder="Escreva sua mensagem" />
+          <InputButton>Enviar</InputButton>
+        </InputContainer>
       </MessageContainer>
       <UsersContainer>
         {users.map((user) => {

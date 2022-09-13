@@ -46,7 +46,7 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <Button onClick={handleSubmit}>Login</Button>
-        <Link to="/">
+        <Link to="/" style={{ textDecoration: "none" }}>
           <Text>Faça seu cadastro aqui!</Text>
         </Link>
       </LoginContainer>

@@ -59,7 +59,7 @@ export default function SignUp() {
           />
           <Button>Cadastre-se</Button>
         </Form>
-        <Link to="/login">
+        <Link to="/login" style={{ textDecoration: "none" }}>
           <Text>Faça seu Login aqui</Text>
         </Link>
       </SignUpContainer>

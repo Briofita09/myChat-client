@@ -3,6 +3,8 @@ import styled from "styled-components";
 export const LoginContainer = styled.div`
   height: 100vh;
   width: 100vw;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const Input = styled.input`
@@ -51,4 +53,5 @@ export const Text = styled.p`
   font-family: "Orbitron", sans-serif;
   font-size: 0.85em;
   color: green;
+  text-align: center;
 `;
