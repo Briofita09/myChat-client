@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { io } from "socket.io-client";
+import { socket } from "../../services/socket.js";
 
 import AppContext from "../../context/AuthContext.js";
 import {
@@ -25,18 +25,19 @@ export default function MainPage() {
   const [channels, setChannels] = useState([]);
   const [users, setUsers] = useState([]);
   const [channel, setChannel] = useState();
+  const [messages, setMessages] = useState([]);
+
   const { token } = useContext(AppContext);
-
-  const socket = io("http://localhost:5000");
-  socket.emit("channelConnect", { channel });
-
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
-  useEffect(() => {
+  /*   useEffect(() => {
+    socket.removeAllListeners();
+    socket.emit("channelConnect", { channel, profile });
+    socket.emit("userConnection", { channel, profile });
     async function fetchProfile() {
       try {
         const response = await axios.get(
@@ -59,27 +60,117 @@ export default function MainPage() {
         console.log(err);
       }
     }
-    async function fetchUsers() {
+    fetchProfile();
+    fetchChannels();
+  }, [channel]);
+
+  useEffect(() => {
+    fetchMessages();
+    socket.on("channelConnect", async (data) => {
+      console.log(data);
+             let message = `${profile.name} se conectou no canal ${data}`;
+      const newMessage = {
+        text: message,
+      };
+      await axios.post("http://localhost:5000/messages", newMessage, config);
+      fetchUsers(channel);
+      fetchMessages(); 
+    });
+  }, [channel]);
+
+  useEffect(() => {
+    socket.on("userConnection", async (data) => {
+      console.log(data[0].name);
+      let message = `${data.name} se conectou no canal ${data[1]}`;
+      const newMessage = {
+        text: message,
+      };
+      await axios.post("http://localhost:5000/messages", newMessage, config);
+      //setMessages([...messages, message]);
+      fetchMessages();
+    });
+  }, [messages]); */
+
+  useEffect(() => {
+    socket.removeAllListeners();
+    socket.emit("channelConnect", { channel, profile });
+    socket.on("channelConnect", async (data) => {
+      fetchMessages();
+    });
+    async function fetchChannels() {
       try {
         const response = await axios.get(
-          "http://localhost:5000/channel-users/1",
+          "http://localhost:5000/all-channels",
           config
         );
-        setUsers(response.data);
+        setChannels(response.data);
       } catch (err) {
         console.log(err);
       }
     }
+    async function fetchProfile() {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/profile",
+          config
+        );
+        setProfile(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    async function fetchMessages() {
+      const response = await axios.get(
+        "http://localhost:5000/messages",
+        config
+      );
+      setMessages(response.data);
+    }
+    fetchMessages();
     fetchProfile();
     fetchChannels();
-    fetchUsers();
   }, [channel]);
 
+  /*   useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/profile",
+          config
+        );
+        setProfile(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    async function fetchMessages() {
+      const response = await axios.get(
+        "http://localhost:5000/messages",
+        config
+      );
+      setMessages(response.data);
+    }
+    fetchMessages();
+    //fetchProfile();
+    //fetchChannels();
+  }, [channel]); */
+
+  async function fetchUsers(id) {
+    const response = await axios.get(
+      `http://localhost:5000/channel-users/${id}`,
+      config
+    );
+    setUsers(response.data);
+  }
+
   async function channelConnect(id) {
-    const socket = io("http://localhost:5000");
-    socket.emit("channelConnect", { channel });
-    await axios.post(`http://localhost:5000/channels/${id}`, {}, config);
-    setChannel(id);
+    try {
+      await axios.post(`http://localhost:5000/channels/${id}`, {}, config);
+      setChannel(id);
+      fetchUsers(id);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async function disconnectChannel() {
@@ -111,10 +202,9 @@ export default function MainPage() {
           <HeaderButton onClick={disconnectChannel}>Desconectar</HeaderButton>
         </HeaderContainer>
         <MessageBox>
-          <Message>Olá Mundo</Message>
-          <Message>Olá Mundo</Message>
-          <Message>Olá Mundo</Message>
-          <Message>Olá Mundo</Message>
+          {messages.map((m) => {
+            return <Message>{m.text}</Message>;
+          })}
         </MessageBox>
         <InputContainer>
           <Input type="text" placeholder="Escreva sua mensagem" />

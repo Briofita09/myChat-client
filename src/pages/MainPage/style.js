@@ -24,7 +24,7 @@ export const MessageContainer = styled.div`
 
 export const MessageBox = styled.div`
   height: 80%;
-  overflow: auto;
+  overflow: scroll;
 `;
 
 export const Message = styled.h2`
