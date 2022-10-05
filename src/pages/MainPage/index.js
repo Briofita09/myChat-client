@@ -113,6 +113,7 @@ export default function MainPage() {
       console.log(err);
     }
   }
+
   return (
     <MainContainer>
       <ChannelContainer>
