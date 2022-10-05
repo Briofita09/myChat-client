@@ -4,6 +4,7 @@ import { socket } from "../../services/socket.js";
 
 import AppContext from "../../context/AuthContext.js";
 import {
+  Author,
   MainContainer,
   ChannelContainer,
   HeaderButton,
@@ -26,6 +27,7 @@ export default function MainPage() {
   const [users, setUsers] = useState([]);
   const [channel, setChannel] = useState();
   const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
 
   const { token } = useContext(AppContext);
   const config = {
@@ -34,68 +36,23 @@ export default function MainPage() {
     },
   };
 
-  /*   useEffect(() => {
-    socket.removeAllListeners();
-    socket.emit("channelConnect", { channel, profile });
-    socket.emit("userConnection", { channel, profile });
-    async function fetchProfile() {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/profile",
-          config
-        );
-        setProfile(response.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    async function fetchChannels() {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/all-channels",
-          config
-        );
-        setChannels(response.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    fetchProfile();
-    fetchChannels();
-  }, [channel]);
+  async function fetchMessages() {
+    const response = await axios.get("http://localhost:5000/messages", config);
+    setMessages(response.data);
+  }
 
   useEffect(() => {
-    fetchMessages();
-    socket.on("channelConnect", async (data) => {
-      console.log(data);
-             let message = `${profile.name} se conectou no canal ${data}`;
-      const newMessage = {
-        text: message,
-      };
-      await axios.post("http://localhost:5000/messages", newMessage, config);
-      fetchUsers(channel);
-      fetchMessages(); 
-    });
-  }, [channel]);
-
-  useEffect(() => {
-    socket.on("userConnection", async (data) => {
-      console.log(data[0].name);
-      let message = `${data.name} se conectou no canal ${data[1]}`;
-      const newMessage = {
-        text: message,
-      };
-      await axios.post("http://localhost:5000/messages", newMessage, config);
-      //setMessages([...messages, message]);
+    socket.on("newMessage", (data) => {
       fetchMessages();
     });
-  }, [messages]); */
+  });
 
   useEffect(() => {
     socket.removeAllListeners();
     socket.emit("channelConnect", { channel, profile });
     socket.on("channelConnect", async (data) => {
       fetchMessages();
+      fetchUsers(data.channel);
     });
     async function fetchChannels() {
       try {
@@ -119,41 +76,10 @@ export default function MainPage() {
         console.log(err);
       }
     }
-    async function fetchMessages() {
-      const response = await axios.get(
-        "http://localhost:5000/messages",
-        config
-      );
-      setMessages(response.data);
-    }
     fetchMessages();
     fetchProfile();
     fetchChannels();
   }, [channel]);
-
-  /*   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/profile",
-          config
-        );
-        setProfile(response.data);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    async function fetchMessages() {
-      const response = await axios.get(
-        "http://localhost:5000/messages",
-        config
-      );
-      setMessages(response.data);
-    }
-    fetchMessages();
-    //fetchProfile();
-    //fetchChannels();
-  }, [channel]); */
 
   async function fetchUsers(id) {
     const response = await axios.get(
@@ -178,6 +104,15 @@ export default function MainPage() {
     setChannel(null);
   }
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      socket.emit("newMessage", { profile, channel, message });
+      setMessage("");
+    } catch (err) {
+      console.log(err);
+    }
+  }
   return (
     <MainContainer>
       <ChannelContainer>
@@ -203,12 +138,21 @@ export default function MainPage() {
         </HeaderContainer>
         <MessageBox>
           {messages.map((m) => {
-            return <Message>{m.text}</Message>;
+            return (
+              <Message>
+                <Author>{m.author.name} disse:</Author> {m.text}
+              </Message>
+            );
           })}
         </MessageBox>
         <InputContainer>
-          <Input type="text" placeholder="Escreva sua mensagem" />
-          <InputButton>Enviar</InputButton>
+          <Input
+            type="text"
+            placeholder="Escreva sua mensagem"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <InputButton onClick={handleSubmit}>Enviar</InputButton>
         </InputContainer>
       </MessageContainer>
       <UsersContainer>

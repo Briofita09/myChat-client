@@ -31,6 +31,7 @@ export const Message = styled.h2`
   font-size: 1em;
   font-family: "Orbitron", sans-serif;
   margin-left: 5%;
+  font-weight: 500;
 `;
 
 export const HeaderContainer = styled.div`
@@ -119,4 +120,9 @@ export const InputButton = styled.button`
   :hover {
     cursor: pointer;
   }
+`;
+
+export const Author = styled.span`
+  font-family: "Orbitron", sans-serif;
+  font-weight: 800;
 `;
