@@ -1,14 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { TextField, Button } from "react95";
 
-import {
-  SignUpContainer,
-  SignUpTitle,
-  Form,
-  Input,
-  Button,
-  Text,
-} from "./style.js";
+import { SignUpContainer, Form, Text } from "./style.js";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -31,33 +25,38 @@ export default function SignUp() {
   return (
     <>
       <SignUpContainer>
-        <SignUpTitle>Cadastre-se no MyChat</SignUpTitle>
+        <h1 style={{ fontSize: 40 }}>Cadastre-se no MyChat</h1>
         <Form onSubmit={handleSubmit}>
-          <Input
+          <TextField
+            style={{ width: 400, marginTop: 30 }}
             type="text"
             placeholder="Nome"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <Input
+          <TextField
+            style={{ width: 400, marginTop: 30 }}
             type="text"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Input
+          <TextField
+            style={{ width: 400, marginTop: 30 }}
             type="password"
             placeholder="Senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Input
-            type="password"
+          <TextField
+            style={{ width: 400, marginTop: 30 }}
             placeholder="Confirme sua senha"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <Button>Cadastre-se</Button>
+          <Button primary style={{ width: 400, marginTop: 30 }}>
+            Cadastre-se
+          </Button>
         </Form>
         <Link to="/login" style={{ textDecoration: "none" }}>
           <Text>Faça seu Login aqui</Text>

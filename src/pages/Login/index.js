@@ -1,13 +1,16 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { TextField, Button } from "react95";
 
-import { LoginContainer, Input, Button, Text } from "./style.js";
+import { LoginContainer, Text } from "./style.js";
 import AppContext from "../../context/AuthContext.js";
+import Loading from "../../components/Loading/index.js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { setToken } = useContext(AppContext);
 
@@ -21,6 +24,7 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await axios.post("http://localhost:5000/login", user);
       setToken(response.data.token);
       navigate("/main");
@@ -31,25 +35,33 @@ export default function Login() {
 
   return (
     <>
-      <LoginContainer>
-        <Input
-          type="text"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      {loading ? (
+        <Loading />
+      ) : (
+        <LoginContainer>
+          <TextField
+            style={{ width: 400, marginTop: 30 }}
+            type="text"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
 
-        <Input
-          type="password"
-          placeholder="Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button onClick={handleSubmit}>Login</Button>
-        <Link to="/" style={{ textDecoration: "none" }}>
-          <Text>Faça seu cadastro aqui!</Text>
-        </Link>
-      </LoginContainer>
+          <TextField
+            style={{ width: 400, marginTop: 30 }}
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button onClick={handleSubmit} style={{ width: 400, marginTop: 30 }}>
+            Login
+          </Button>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <Text>Faça seu cadastro aqui!</Text>
+          </Link>
+        </LoginContainer>
+      )}
     </>
   );
 }

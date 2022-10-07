@@ -1,7 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { socket } from "../../services/socket.js";
+import { Button, Cutout, TextField } from "react95";
 
+import { socket } from "../../services/socket.js";
 import AppContext from "../../context/AuthContext.js";
 import {
   Author,
@@ -119,12 +120,14 @@ export default function MainPage() {
       <ChannelContainer>
         {channels.map((channel) => {
           return (
-            <Channel
+            <Button
+              primary
+              style={{ marginTop: 30, height: 80 }}
               key={channel.id}
               onClick={() => channelConnect(channel.id)}
             >
               {channel.name}
-            </Channel>
+            </Button>
           );
         })}
       </ChannelContainer>
@@ -135,30 +138,51 @@ export default function MainPage() {
               ? `Olá ${profile.name}, você está no canal ${profile.channel}`
               : `Olá ${profile.name}, conecte a um canal para conversar`}
           </HeaderTitle>
-          <HeaderButton onClick={disconnectChannel}>Desconectar</HeaderButton>
+          <Button primary onClick={disconnectChannel}>
+            Desconectar
+          </Button>
         </HeaderContainer>
         <MessageBox>
-          {messages.map((m) => {
-            return (
-              <Message>
-                <Author>{m.author.name} disse:</Author> {m.text}
-              </Message>
-            );
-          })}
+          <Cutout style={{ height: "100%" }}>
+            {messages.map((m) => {
+              return (
+                <Message>
+                  <Author>{m.author.name} disse:</Author> {m.text}
+                </Message>
+              );
+            })}
+          </Cutout>
         </MessageBox>
-        <InputContainer>
-          <Input
+        <InputContainer onSubmit={handleSubmit}>
+          <TextField
+            style={{
+              width: "100%",
+              height: 60,
+            }}
             type="text"
             placeholder="Escreva sua mensagem"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
           />
-          <InputButton onClick={handleSubmit}>Enviar</InputButton>
+          <Button style={{ height: 60 }} primary onClick={handleSubmit}>
+            Enviar
+          </Button>
         </InputContainer>
       </MessageContainer>
       <UsersContainer>
         {users.map((user) => {
-          return <User>{user.name}</User>;
+          if (user.name === profile.name) {
+            return (
+              <Button active style={{ width: "100%", cursor: "default" }}>
+                {user.name}
+              </Button>
+            );
+          }
+          return (
+            <Button style={{ width: "100%", cursor: "default" }}>
+              {user.name}
+            </Button>
+          );
         })}
       </UsersContainer>
     </MainContainer>
