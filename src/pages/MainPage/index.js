@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Button, Cutout, TextField } from "react95";
 
 import { socket } from "../../services/socket.js";
@@ -8,18 +9,13 @@ import {
   Author,
   MainContainer,
   ChannelContainer,
-  HeaderButton,
   HeaderContainer,
   HeaderTitle,
   MessageContainer,
   MessageBox,
   UsersContainer,
   Message,
-  User,
-  Channel,
   InputContainer,
-  Input,
-  InputButton,
 } from "./style.js";
 
 export default function MainPage() {
@@ -29,6 +25,9 @@ export default function MainPage() {
   const [channel, setChannel] = useState();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const lastMessage = useRef(null);
+
+  const navigate = useNavigate();
 
   const { token } = useContext(AppContext);
   const config = {
@@ -40,6 +39,7 @@ export default function MainPage() {
   async function fetchMessages() {
     const response = await axios.get("http://localhost:5000/messages", config);
     setMessages(response.data);
+    lastMessage.current?.scrollIntoView();
   }
 
   useEffect(() => {
@@ -103,6 +103,7 @@ export default function MainPage() {
   async function disconnectChannel() {
     await axios.delete("http://localhost:5000/channels", config);
     setChannel(null);
+    navigate("/");
   }
 
   async function handleSubmit(e) {
@@ -143,7 +144,7 @@ export default function MainPage() {
           </Button>
         </HeaderContainer>
         <MessageBox>
-          <Cutout style={{ height: "100%" }}>
+          <Cutout style={{ height: "99%" }}>
             {messages.map((m) => {
               return (
                 <Message>
@@ -151,6 +152,7 @@ export default function MainPage() {
                 </Message>
               );
             })}
+            <div ref={lastMessage}></div>
           </Cutout>
         </MessageBox>
         <InputContainer onSubmit={handleSubmit}>

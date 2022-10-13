@@ -1,5 +1,6 @@
+import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { TextField, Button } from "react95";
 
 import { SignUpContainer, Form, Text } from "./style.js";
@@ -10,6 +11,8 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const user = {
     name,
     password,
@@ -17,9 +20,14 @@ export default function SignUp() {
     confirmPassword,
   };
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log(user);
+    try {
+      await axios.post("http://localhost:5000/sign-up", user);
+      navigate("/login");
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   return (
@@ -54,7 +62,11 @@ export default function SignUp() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <Button primary style={{ width: 400, marginTop: 30 }}>
+          <Button
+            primary
+            style={{ width: 400, marginTop: 30 }}
+            onClick={handleSubmit}
+          >
             Cadastre-se
           </Button>
         </Form>
