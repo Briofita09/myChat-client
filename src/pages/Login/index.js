@@ -6,12 +6,13 @@ import { TextField, Button } from "react95";
 import { LoginContainer, Text } from "./style.js";
 import AppContext from "../../context/AuthContext.js";
 import Loading from "../../components/Loading/index.js";
+import apiService from "../../services/api.service.js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const url = process.env.REACT_APP_API_BASE;
   const { setToken } = useContext(AppContext);
 
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function Login() {
     e.preventDefault();
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:5000/login", user);
+      const response = await axios.post(`${url}/login`, user);
       setToken(response.data.token);
       navigate("/main");
     } catch (err) {

@@ -26,7 +26,7 @@ export default function MainPage() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const lastMessage = useRef(null);
-
+  const url = process.env.REACT_APP_API_BASE;
   const navigate = useNavigate();
 
   const { token } = useContext(AppContext);
@@ -37,7 +37,7 @@ export default function MainPage() {
   };
 
   async function fetchMessages() {
-    const response = await axios.get("http://localhost:5000/messages", config);
+    const response = await axios.get(`${url}/messages`, config);
     setMessages(response.data);
     lastMessage.current?.scrollIntoView();
   }
@@ -57,10 +57,7 @@ export default function MainPage() {
     });
     async function fetchChannels() {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/all-channels",
-          config
-        );
+        const response = await axios.get(`${url}/all-channels`, config);
         setChannels(response.data);
       } catch (err) {
         console.log(err);
@@ -68,10 +65,7 @@ export default function MainPage() {
     }
     async function fetchProfile() {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/profile",
-          config
-        );
+        const response = await axios.get(`${url}/profile`, config);
         setProfile(response.data);
       } catch (err) {
         console.log(err);
@@ -83,16 +77,13 @@ export default function MainPage() {
   }, [channel]);
 
   async function fetchUsers(id) {
-    const response = await axios.get(
-      `http://localhost:5000/channel-users/${id}`,
-      config
-    );
+    const response = await axios.get(`${url}/channel-users/${id}`, config);
     setUsers(response.data);
   }
 
   async function channelConnect(id) {
     try {
-      await axios.post(`http://localhost:5000/channels/${id}`, {}, config);
+      await axios.post(`${url}/channels/${id}`, {}, config);
       setChannel(id);
       fetchUsers(id);
     } catch (err) {
@@ -101,7 +92,7 @@ export default function MainPage() {
   }
 
   async function disconnectChannel() {
-    await axios.delete("http://localhost:5000/channels", config);
+    await axios.delete(`${url}/channels`, config);
     setChannel(null);
     navigate("/");
   }

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TextField, Button } from "react95";
+import apiService from "../../services/api.service.js";
 
 import { SignUpContainer, Form, Text } from "./style.js";
 
@@ -10,7 +11,7 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
+  const url = process.env.REACT_APP_API_BASE;
   const navigate = useNavigate();
 
   const user = {
@@ -23,7 +24,7 @@ export default function SignUp() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/sign-up", user);
+      await axios.post(`${url}/sign-up`, user);
       navigate("/login");
     } catch (err) {
       console.log(err);
@@ -58,6 +59,7 @@ export default function SignUp() {
           />
           <TextField
             style={{ width: 400, marginTop: 30 }}
+            type="password"
             placeholder="Confirme sua senha"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
